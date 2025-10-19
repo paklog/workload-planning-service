@@ -1,0 +1,15 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+workload-planning-service,com.paklog.wms.workload.adapter.rest,WorkloadPlanningController,6,361,0,14,0,89,1,23,1,16
+workload-planning-service,com.paklog.wms.workload.adapter.event,WorkloadPlanningEventPublisher,35,250,1,5,7,57,1,13,0,11
+workload-planning-service,com.paklog.wms.workload.domain.aggregate,WorkloadPlan.PlanStatus,0,27,0,0,0,5,0,1,0,1
+workload-planning-service,com.paklog.wms.workload.domain.aggregate,WorkloadPlan,45,353,9,13,3,87,10,34,2,31
+workload-planning-service,com.paklog.wms.workload.domain.aggregate,WorkloadPlan.ShiftAssignment,0,15,0,0,0,1,0,1,0,1
+workload-planning-service,com.paklog.wms.workload.domain.aggregate,DemandForecast.ForecastDataPoint,0,15,0,0,0,1,0,1,0,1
+workload-planning-service,com.paklog.wms.workload.domain.aggregate,DemandForecast,67,231,15,14,6,53,13,29,1,25
+workload-planning-service,com.paklog.wms.workload.domain.entity,WorkerCapacity,25,111,1,5,1,28,2,16,1,14
+workload-planning-service,com.paklog.wms.workload.application.service,WorkloadPlanningService.WorkloadRecommendations,0,12,0,0,0,1,0,1,0,1
+workload-planning-service,com.paklog.wms.workload.application.service,WorkloadPlanningService,174,645,23,28,32,141,27,27,8,19
+workload-planning-service,com.paklog.wms.workload.domain.valueobject,WorkloadCategory,12,109,3,2,3,20,4,6,1,6
+workload-planning-service,com.paklog.wms.workload.domain.valueobject,ForecastPeriod,8,80,5,3,1,15,5,7,1,7
+workload-planning-service,com.paklog.wms.workload.domain.valueobject,ShiftType,12,167,0,14,4,22,4,12,4,5
+workload-planning-service,com.paklog.wms.workload.domain.valueobject,SkillLevel,13,83,6,4,2,14,6,6,2,5

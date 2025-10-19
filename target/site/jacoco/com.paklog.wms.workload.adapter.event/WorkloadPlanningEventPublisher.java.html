@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WorkloadPlanningEventPublisher.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">workload-planning-service</a> &gt; <a href="index.source.html" class="el_package">com.paklog.wms.workload.adapter.event</a> &gt; <span class="el_source">WorkloadPlanningEventPublisher.java</span></div><h1>WorkloadPlanningEventPublisher.java</h1><pre class="source lang-java linenums">package com.paklog.wms.workload.adapter.event;
+
+import io.cloudevents.CloudEvent;
+import io.cloudevents.core.builder.CloudEventBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Component;
+
+import java.net.URI;
+import java.time.OffsetDateTime;
+import java.util.Map;
+import java.util.UUID;
+
+/**
+ * Event publisher for Workload Planning Service
+ * Publishes CloudEvents to Kafka for downstream consumption
+ */
+@Component
+public class WorkloadPlanningEventPublisher {
+
+<span class="fc" id="L22">    private static final Logger logger = LoggerFactory.getLogger(WorkloadPlanningEventPublisher.class);</span>
+    private static final String SOURCE = &quot;workload-planning-service&quot;;
+
+    private final KafkaTemplate&lt;String, CloudEvent&gt; kafkaTemplate;
+
+<span class="fc" id="L27">    public WorkloadPlanningEventPublisher(KafkaTemplate&lt;String, CloudEvent&gt; kafkaTemplate) {</span>
+<span class="fc" id="L28">        this.kafkaTemplate = kafkaTemplate;</span>
+<span class="fc" id="L29">    }</span>
+
+    /**
+     * Publish demand forecast generated event
+     */
+    public void publishForecastGenerated(
+            String forecastId,
+            String warehouseId,
+            String period,
+            String forecastingModel,
+            Double accuracy
+    ) {
+<span class="fc" id="L41">        Map&lt;String, Object&gt; data = Map.of(</span>
+            &quot;forecastId&quot;, forecastId,
+            &quot;warehouseId&quot;, warehouseId,
+            &quot;period&quot;, period,
+            &quot;forecastingModel&quot;, forecastingModel,
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">            &quot;accuracy&quot;, accuracy != null ? accuracy.toString() : &quot;0.0&quot;</span>
+        );
+
+<span class="fc" id="L49">        CloudEvent event = buildEvent(</span>
+            &quot;com.paklog.workload.forecast.generated&quot;,
+            forecastId,
+            data
+        );
+
+<span class="fc" id="L55">        publishEvent(&quot;workload-events&quot;, forecastId, event);</span>
+<span class="fc" id="L56">    }</span>
+
+    /**
+     * Publish workload plan created event
+     */
+    public void publishPlanCreated(
+            String planId,
+            String warehouseId,
+            String planDate,
+            Integer totalRequiredHours
+    ) {
+<span class="fc" id="L67">        Map&lt;String, Object&gt; data = Map.of(</span>
+            &quot;planId&quot;, planId,
+            &quot;warehouseId&quot;, warehouseId,
+            &quot;planDate&quot;, planDate,
+<span class="fc" id="L71">            &quot;totalRequiredHours&quot;, totalRequiredHours.toString()</span>
+        );
+
+<span class="fc" id="L74">        CloudEvent event = buildEvent(</span>
+            &quot;com.paklog.workload.plan.created&quot;,
+            planId,
+            data
+        );
+
+<span class="fc" id="L80">        publishEvent(&quot;workload-events&quot;, planId, event);</span>
+<span class="fc" id="L81">    }</span>
+
+    /**
+     * Publish workload plan approved event
+     */
+    public void publishPlanApproved(
+            String planId,
+            String warehouseId,
+            String approvedBy,
+            Integer totalWorkers,
+            Double utilization
+    ) {
+<span class="fc" id="L93">        Map&lt;String, Object&gt; data = Map.of(</span>
+            &quot;planId&quot;, planId,
+            &quot;warehouseId&quot;, warehouseId,
+            &quot;approvedBy&quot;, approvedBy,
+<span class="fc" id="L97">            &quot;totalWorkers&quot;, totalWorkers.toString(),</span>
+<span class="fc" id="L98">            &quot;utilization&quot;, utilization.toString()</span>
+        );
+
+<span class="fc" id="L101">        CloudEvent event = buildEvent(</span>
+            &quot;com.paklog.workload.plan.approved&quot;,
+            planId,
+            data
+        );
+
+<span class="fc" id="L107">        publishEvent(&quot;workload-events&quot;, planId, event);</span>
+<span class="fc" id="L108">    }</span>
+
+    /**
+     * Publish workload plan published event
+     */
+    public void publishPlanPublished(
+            String planId,
+            String warehouseId,
+            String planDate,
+            Integer totalWorkers
+    ) {
+<span class="fc" id="L119">        Map&lt;String, Object&gt; data = Map.of(</span>
+            &quot;planId&quot;, planId,
+            &quot;warehouseId&quot;, warehouseId,
+            &quot;planDate&quot;, planDate,
+<span class="fc" id="L123">            &quot;totalWorkers&quot;, totalWorkers.toString()</span>
+        );
+
+<span class="fc" id="L126">        CloudEvent event = buildEvent(</span>
+            &quot;com.paklog.workload.plan.published&quot;,
+            planId,
+            data
+        );
+
+<span class="fc" id="L132">        publishEvent(&quot;workload-events&quot;, planId, event);</span>
+<span class="fc" id="L133">    }</span>
+
+    /**
+     * Publish workload plan cancelled event
+     */
+    public void publishPlanCancelled(
+            String planId,
+            String warehouseId,
+            String reason
+    ) {
+<span class="fc" id="L143">        Map&lt;String, Object&gt; data = Map.of(</span>
+            &quot;planId&quot;, planId,
+            &quot;warehouseId&quot;, warehouseId,
+            &quot;reason&quot;, reason
+        );
+
+<span class="fc" id="L149">        CloudEvent event = buildEvent(</span>
+            &quot;com.paklog.workload.plan.cancelled&quot;,
+            planId,
+            data
+        );
+
+<span class="fc" id="L155">        publishEvent(&quot;workload-events&quot;, planId, event);</span>
+<span class="fc" id="L156">    }</span>
+
+    /**
+     * Publish worker assigned event
+     */
+    public void publishWorkerAssigned(
+            String planId,
+            String workerId,
+            String workerName,
+            String shift,
+            String category,
+            Integer plannedHours
+    ) {
+<span class="fc" id="L169">        Map&lt;String, Object&gt; data = Map.of(</span>
+            &quot;planId&quot;, planId,
+            &quot;workerId&quot;, workerId,
+            &quot;workerName&quot;, workerName,
+            &quot;shift&quot;, shift,
+            &quot;category&quot;, category,
+<span class="fc" id="L175">            &quot;plannedHours&quot;, plannedHours.toString()</span>
+        );
+
+<span class="fc" id="L178">        CloudEvent event = buildEvent(</span>
+            &quot;com.paklog.workload.worker.assigned&quot;,
+            planId,
+            data
+        );
+
+<span class="fc" id="L184">        publishEvent(&quot;workload-events&quot;, planId, event);</span>
+<span class="fc" id="L185">    }</span>
+
+    /**
+     * Build CloudEvent
+     */
+    private CloudEvent buildEvent(String type, String subject, Map&lt;String, Object&gt; data) {
+<span class="fc" id="L191">        return CloudEventBuilder.v1()</span>
+<span class="fc" id="L192">            .withId(UUID.randomUUID().toString())</span>
+<span class="fc" id="L193">            .withSource(URI.create(SOURCE))</span>
+<span class="fc" id="L194">            .withType(type)</span>
+<span class="fc" id="L195">            .withSubject(subject)</span>
+<span class="fc" id="L196">            .withTime(OffsetDateTime.now())</span>
+<span class="fc" id="L197">            .withDataContentType(&quot;application/json&quot;)</span>
+<span class="fc" id="L198">            .withData(convertToJson(data).getBytes())</span>
+<span class="fc" id="L199">            .build();</span>
+    }
+
+    /**
+     * Publish event to Kafka
+     */
+    private void publishEvent(String topic, String key, CloudEvent event) {
+        try {
+<span class="nc" id="L207">            kafkaTemplate.send(topic, key, event);</span>
+<span class="nc" id="L208">            logger.info(&quot;Published event: type={}, subject={}, topic={}&quot;,</span>
+<span class="nc" id="L209">                event.getType(), event.getSubject(), topic);</span>
+<span class="fc" id="L210">        } catch (Exception e) {</span>
+<span class="fc" id="L211">            logger.error(&quot;Failed to publish event: type={}, subject={}&quot;,</span>
+<span class="fc" id="L212">                event.getType(), event.getSubject(), e);</span>
+<span class="nc" id="L213">        }</span>
+<span class="fc" id="L214">    }</span>
+
+    /**
+     * Convert data map to JSON string
+     */
+    private String convertToJson(Map&lt;String, Object&gt; data) {
+        try {
+<span class="fc" id="L221">            StringBuilder json = new StringBuilder(&quot;{&quot;);</span>
+<span class="fc" id="L222">            boolean first = true;</span>
+<span class="fc bfc" id="L223" title="All 2 branches covered.">            for (Map.Entry&lt;String, Object&gt; entry : data.entrySet()) {</span>
+<span class="fc bfc" id="L224" title="All 2 branches covered.">                if (!first) json.append(&quot;,&quot;);</span>
+<span class="fc" id="L225">                json.append(&quot;\&quot;&quot;).append(entry.getKey()).append(&quot;\&quot;:\&quot;&quot;)</span>
+<span class="fc" id="L226">                    .append(entry.getValue()).append(&quot;\&quot;&quot;);</span>
+<span class="fc" id="L227">                first = false;</span>
+<span class="fc" id="L228">            }</span>
+<span class="fc" id="L229">            json.append(&quot;}&quot;);</span>
+<span class="fc" id="L230">            return json.toString();</span>
+<span class="nc" id="L231">        } catch (Exception e) {</span>
+<span class="nc" id="L232">            logger.error(&quot;Failed to convert data to JSON&quot;, e);</span>
+<span class="nc" id="L233">            return &quot;{}&quot;;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

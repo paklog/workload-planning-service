@@ -1,0 +1,6 @@
+com/paklog/wms/workload/domain/entity/WorkerCapacityTest.class
+com/paklog/wms/workload/domain/valueobject/ValueObjectsTest.class
+com/paklog/wms/workload/domain/aggregate/DemandForecastTest.class
+com/paklog/wms/workload/domain/aggregate/WorkloadPlanTest.class
+com/paklog/wms/workload/adapter/rest/WorkloadPlanningControllerTest.class
+com/paklog/wms/workload/application/service/WorkloadPlanningServiceIntegrationTest.class

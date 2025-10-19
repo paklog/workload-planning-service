@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WorkloadPlanResponse.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">workload-planning-service</a> &gt; <a href="index.source.html" class="el_package">com.paklog.wms.workload.adapter.rest.dto</a> &gt; <span class="el_source">WorkloadPlanResponse.java</span></div><h1>WorkloadPlanResponse.java</h1><pre class="source lang-java linenums">package com.paklog.wms.workload.adapter.rest.dto;
+
+import com.paklog.wms.workload.domain.aggregate.WorkloadPlan;
+import com.paklog.wms.workload.domain.valueobject.ShiftType;
+import com.paklog.wms.workload.domain.valueobject.WorkloadCategory;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+
+<span class="nc" id="L12">public record WorkloadPlanResponse(</span>
+    String planId,
+    String warehouseId,
+    LocalDate planDate,
+    Map&lt;WorkloadCategory, Integer&gt; plannedVolumes,
+    Map&lt;ShiftType, List&lt;ShiftAssignmentDto&gt;&gt; shiftAssignments,
+    Integer totalRequiredLaborHours,
+    Integer totalAvailableLaborHours,
+    Double utilizationPercentage,
+    String status,
+    String notes,
+    LocalDateTime createdAt,
+    LocalDateTime updatedAt
+) {
+    public static WorkloadPlanResponse from(WorkloadPlan plan) {
+<span class="nc" id="L27">        return new WorkloadPlanResponse(</span>
+<span class="nc" id="L28">            plan.getPlanId(),</span>
+<span class="nc" id="L29">            plan.getWarehouseId(),</span>
+<span class="nc" id="L30">            plan.getPlanDate(),</span>
+<span class="nc" id="L31">            plan.getPlannedVolumes(),</span>
+<span class="nc" id="L32">            plan.getShiftAssignments().entrySet().stream()</span>
+<span class="nc" id="L33">                .collect(java.util.stream.Collectors.toMap(</span>
+                    Map.Entry::getKey,
+<span class="nc" id="L35">                    e -&gt; e.getValue().stream().map(ShiftAssignmentDto::from).toList()</span>
+                )),
+<span class="nc" id="L37">            plan.getTotalRequiredLaborHours(),</span>
+<span class="nc" id="L38">            plan.getTotalAvailableLaborHours(),</span>
+<span class="nc" id="L39">            plan.getUtilizationPercentage(),</span>
+<span class="nc" id="L40">            plan.getStatus().name(),</span>
+<span class="nc" id="L41">            plan.getNotes(),</span>
+<span class="nc" id="L42">            plan.getCreatedAt(),</span>
+<span class="nc" id="L43">            plan.getUpdatedAt()</span>
+        );
+    }
+
+<span class="nc" id="L47">    public record ShiftAssignmentDto(</span>
+        String workerId,
+        String workerName,
+        WorkloadCategory primaryCategory,
+        Integer plannedHours
+    ) {
+        public static ShiftAssignmentDto from(WorkloadPlan.ShiftAssignment assignment) {
+<span class="nc" id="L54">            return new ShiftAssignmentDto(</span>
+<span class="nc" id="L55">                assignment.workerId(),</span>
+<span class="nc" id="L56">                assignment.workerName(),</span>
+<span class="nc" id="L57">                assignment.primaryCategory(),</span>
+<span class="nc" id="L58">                assignment.plannedHours()</span>
+            );
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

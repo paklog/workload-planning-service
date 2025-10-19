@@ -1,0 +1,6 @@
+/Users/claudioed/development/github/paklog/workload-planning-service/src/test/java/com/paklog/wms/workload/domain/aggregate/DemandForecastTest.java
+/Users/claudioed/development/github/paklog/workload-planning-service/src/test/java/com/paklog/wms/workload/domain/entity/WorkerCapacityTest.java
+/Users/claudioed/development/github/paklog/workload-planning-service/src/test/java/com/paklog/wms/workload/application/service/WorkloadPlanningServiceIntegrationTest.java
+/Users/claudioed/development/github/paklog/workload-planning-service/src/test/java/com/paklog/wms/workload/domain/valueobject/ValueObjectsTest.java
+/Users/claudioed/development/github/paklog/workload-planning-service/src/test/java/com/paklog/wms/workload/domain/aggregate/WorkloadPlanTest.java
+/Users/claudioed/development/github/paklog/workload-planning-service/src/test/java/com/paklog/wms/workload/adapter/rest/WorkloadPlanningControllerTest.java
